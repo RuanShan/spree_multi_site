@@ -1,0 +1,11 @@
+--- 
+zh-CN:
+    site_name: 网站名称
+    site_domain: 网站域名
+    site_account: Site Account
+    site_layout: Site Layout
+    site: 网站
+    load_sample: 载入示例数据    
+    test_mailer:
+      test_email:
+        load_sample: 载入示例数据
