@@ -1,0 +1,23 @@
+<div data-hook="admin_site_form_fields">
+  <div class="clearfix">
+    <div class="left" data-hook="admin_site_form_left">
+      <p>
+        <%= f.label :name, t(:site_name) %> <span class="required">*</span><br />
+        <%= f.text_field :name, :class => 'fullwidth title' %>
+      </p>
+      <p>
+        <%= f.label :domain, t(:site_domain) %> <span class="required">*</span><br />
+        <%= f.text_field :domain, :class => 'fullwidth title' %>
+      </p>
+      <p>
+        <%= f.label :has_sample, t(:site_has_sample) %> <br />
+        <%= f.check_box :has_sample, :class => 'fullwidth title' %>
+      </p>
+      <% if @site.new_record? %>
+        
+        <%= render :partial => 'spree/sites/user', :locals => { :user => @user } %>
+            
+      <% end %>
+    </div>
+  </div>
+</div>

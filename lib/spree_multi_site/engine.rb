@@ -14,6 +14,7 @@ module SpreeMultiSite
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
     end
+    #spree_abc require #{config.root}/app/mailers
     config.autoload_paths += %W(#{config.root}/app/models/spree #{config.root}/app/jobs)
     config.to_prepare &method(:activate).to_proc
   end

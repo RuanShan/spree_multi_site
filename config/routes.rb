@@ -3,6 +3,9 @@ Spree::Core::Engine.routes.draw do
   namespace :admin do
     resources :sites
   end
+  match 'new_site' => 'sites#new', :as => :new_site
+  resources :sites, :only => [:show]
+
   if Rails.env.development?
     mount Spree::UserMailer::Preview => 'mail_view'
   end

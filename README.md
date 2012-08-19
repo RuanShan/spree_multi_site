@@ -5,7 +5,8 @@ Introduction goes here.
 
 url for site admin 
 http://localhost:3000/admin/sites
-
+create new site 
+http://localhost:3000/sites/new
 Example
 =======
 

@@ -35,10 +35,6 @@ end
 Rake::Task['railties:install:migrations'].enhance do
   rename_multi_site_migrations
 end
-#  
-#Rake::Task['spree_multi_site:install:migrations'].enhance do
-#  rename_multi_site_migrations
-#end
 
 #namespace :spree_multi_site do
 #  namespace :install do
@@ -61,16 +57,24 @@ namespace :spree do
           cp file, RAILS_ROOT + path
         end
       end  
-      
-      desc "Copies public assets of the Multi Site to the instance public/ directory."
-      task :bootstrap_multi_site => :environment do
+      desc "remove multi_site's migrations first,then install again, useful for modifing some existing migration file!"
+      task :reinstall_migrations => :environment do
+          Dir[File.join(Rails.root,'db','migrate','*.rb')].sort.each{|file|
+            if file=~/spree_multi_site.rb$/
+              File.delete(file)
+            end     
+          }
+          Rake::Task['spree_multi_site:install:migrations'].invoke
+      end
+      #desc "Copies public assets of the Multi Site to the instance public/ directory."
+      #task :bootstrap_multi_site => :environment do
         # Loading in all sample data into database.
-        site = Spree::Site.create(:name => "local", :domain => "localhost", :layout => "localhost")
-        site.products = Spree::Product.find(:all)
-        site.taxonomies = Spree::Taxonomy.find(:all)
-        site.orders = Spree::Order.find(:all)
-        site.save
-      end  
+        #site = Spree::Site.create(:name => "local", :domain => "localhost", :layout => "localhost")
+        #site.products = Spree::Product.find(:all)
+        #site.taxonomies = Spree::Taxonomy.find(:all)
+        #site.orders = Spree::Order.find(:all)
+        #site.save
+      #end  
     end
   end
 end

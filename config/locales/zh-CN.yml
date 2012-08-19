@@ -9,3 +9,5 @@ zh-CN:
     test_mailer:
       test_email:
         load_sample: 载入示例数据
+    loading_sample: 系统正在为您加载示例产品信息, 请您登录注册使用的邮箱查询我们的邮件通知!
+        

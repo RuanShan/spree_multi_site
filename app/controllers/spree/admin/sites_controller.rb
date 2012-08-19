@@ -10,7 +10,7 @@ module Spree
       
       def create
         @user = Spree::User.new(params[:user])
-        @site.users << [@user]
+        @site.users << @user
         super
       end
       

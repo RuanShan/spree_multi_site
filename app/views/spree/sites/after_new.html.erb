@@ -1,0 +1,5 @@
+
+<%= t 'successfully_created',:resource=> "#{t('site')}:#{@site.name}"%> <br/>
+<% if @site.loading_sample? %>
+<%= t :loading_sample %>
+<% end %>
