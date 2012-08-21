@@ -15,3 +15,6 @@ capybara-*.html
 rerun.txt
 pickle-email-*.htmlspec/dummy/log
 spec/dummy/tmp
+spec/dummy/log/development.log
+spec/dummy/public/spree
+spec/dummy/tmp
