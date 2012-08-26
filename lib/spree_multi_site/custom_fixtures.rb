@@ -65,9 +65,10 @@ module SpreeMultiSite
                 # table_rows.keys.each do |table|
                 #   conn.delete "DELETE FROM #{conn.quote_table_name(table)}", 'Fixture Delete'
                 # end
-Rails.logger.debug "ff=#{ff}"                
                 habtm_association = model_class.reflect_on_all_associations(:has_and_belongs_to_many).first
-                
+if model_class.to_s=~/Taxon$/
+  puts "fixture_path=#{ff.instance_variable_get(:@fixture_path)},taxon row=#{table_rows.inspect}"
+end                  
                 table_rows.each do |table_name,rows|
                   #handle join table separately, assume one model only have one HABTM association
                   next if habtm_association.present? and table_name == habtm_association.options[:join_table]
@@ -76,21 +77,32 @@ Rails.logger.debug "ff=#{ff}"
                       #conn.insert_fixture(row, table_name)
                       primary_key =  ff.identify_primary_key(row)
                       row.delete( "id" )
-Rails.logger.debug "model_class=#{ff.model_class},primary_key=#{primary_key},table_name=#{table_name}"                            
+                 
+                      if row['parent_id'].present? # nested set, taxon
+                        parent_key = ActiveRecord::Fixtures.identify(row['parent_id'])
+                        row['parent_id'] = models_map[parent_key]
+                        if row['parent_id']==0                        
+Rails.logger.debug "model_class=#{ff.model_class},primary_key=#{primary_key},table_name=#{table_name},parent_id=#{row['parent_id']}"
+                    raise "can not find parent reference: #{row.inspect},parent_key=#{parent_key},models_map=#{models_map.inspect}"
+                        end 
+                      end                      
+Rails.logger.debug "model_class=#{ff.model_class},primary_key=#{primary_key},table_name=#{table_name},parent_id=#{row['parent_id']}"                            
                       model_instance = model_class.new()
                       model_instance.assign_attributes(row,:without_protection => true)
-                      if table_name=~/tax_rates|shipping_methods|products|users|shipments/ 
+                      if table_name=~/taxonomies|tax_rates|shipping_methods|products|users|shipments/ 
+                        # taxonomies has :after_save to create taxon root, insert_fixture would avoid that.
                         # tax_rate has one calculator, calculator belongs to tax_rate, 
                         # we have to create tax_rate before calculator since calculator require tax_rate.id
                         # tax_rate has calculator presence validation, so set validate=>false here. so does shipping_method
                         # TODO for product price validation 
                         #model_instance.save!(:validate => false), it may not work, 
                         conn.insert_fixture(row, table_name)
+                        models_map[primary_key] = client_connection.last_id 
                       else
                         model_instance.save!
+                        models_map[primary_key] = model_instance.id 
                       end
 #puts "primary_key=#{primary_key},model_instance=#{model_instance.inspect}"  
-                      models_map[primary_key] = client_connection.last_id 
                     end                  
                 end
                 #create HABTM join talbe record with real foreign_key and mock association_foreign_key
@@ -139,7 +151,14 @@ end
         }
         @@all_cached_habtm_rows.clear
       end
+      
+      # table act_as_nested_set is sepcial kind of tables
+      # it has column 'parent_id', should replace it with real id before insert.
+      # prams,  fixtures: instance of Fixtures
+      #   
+      def self.create_nested_set_records(fixtures)
         
+      end  
       # Replace this method to handle associations in yml.
           # Return a hash of rows to be inserted. The key is the table, the value is
       # a list of rows to insert to that table.

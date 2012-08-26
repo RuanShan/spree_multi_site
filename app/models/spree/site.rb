@@ -73,6 +73,7 @@ Rails.logger.debug "load sample from dir=#{dir}"
     order_indexes = ['properites','option_types','option_values', 
       'tax_categories','tax_rates','shipping_methods','promotions','calculators',
       'products','product_properties','product_option_types','variants','assets', 
+      'taxonomies','taxons',
       'users','orders','line_items','shipments','ship_addresses','adjustments']
     #{:a=>1, :b=>2, :c=>3}.sort => [[:a, 1], [:b, 2], [:c, 3]] 
     sorted_fixtures = fixtures.sort{|a,b|
