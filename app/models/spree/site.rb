@@ -22,6 +22,7 @@ class Spree::Site < ActiveRecord::Base
   # db/migrate/some_migration is using Spree::Product, it has default_scope using Site.current.id
   # so it require a default value.
   def load_sample(be_loading = true)
+    original_current_website, self.class.current = self.class.current, self 
     
     if be_loading!=true #
       self.orders.each{|order|
@@ -52,7 +53,6 @@ class Spree::Site < ActiveRecord::Base
       return
     end
     
-    original_current_website, self.class.current = self.class.current, self 
     require 'ffaker'
     require 'erb'
     require 'spree_multi_site/custom_fixtures'

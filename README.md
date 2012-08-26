@@ -3,10 +3,26 @@ SpreeMultiSite
 
 Introduction goes here.
 
-url for site admin 
-http://localhost:3000/admin/sites
-create new site 
-http://localhost:3000/sites/new
+  # url for site admin 
+  http://localhost:3000/admin/sites
+  
+  # create new site 
+  http://localhost:3000/sites/new
+  
+  # it is using delayed_job to load sample when create site vie above url
+  # Start a delayed_job worker.
+  rake jobs:work  
+  want more about delayed_job, please go to https://github.com/collectiveidea/delayed_job
+  
+  # a site load the sample data in console 
+  $> rails r "Spree::Site.first.load_sample"
+  
+  # a site remove sample data in console 
+  $> rails r "Spree::Site.first.load_sample(false)"
+  
+  # login shop by localhost for test
+  please set cookies key :abc_development_domain=your-site-domain.
+  
 Example
 =======
 

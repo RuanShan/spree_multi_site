@@ -28,7 +28,23 @@ Spree::TaxCategory.class_eval do
   belongs_to :site
   default_scope  { where(:site_id =>  Spree::Site.current.id) }
 end
-  
+Spree::Property.class_eval do
+  belongs_to :site
+  default_scope  { where(:site_id =>  Spree::Site.current.id) }
+end
+Spree::PaymentMethod.class_eval do
+  belongs_to :site
+  default_scope  { where(:site_id =>  Spree::Site.current.id) }
+end    
+Spree::OptionType.class_eval do
+  belongs_to :site
+  default_scope  { where(:site_id =>  Spree::Site.current.id) }
+end    
+Spree::Prototype.class_eval do
+  belongs_to :site
+  default_scope  { where(:site_id =>  Spree::Site.current.id) }
+end    
+
 Spree::ShippingCategory.class_eval do
   has_many :shipping_methods,:dependent=>:destroy #override to add destroy
 end
