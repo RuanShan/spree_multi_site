@@ -66,9 +66,7 @@ module SpreeMultiSite
                 #   conn.delete "DELETE FROM #{conn.quote_table_name(table)}", 'Fixture Delete'
                 # end
                 habtm_association = model_class.reflect_on_all_associations(:has_and_belongs_to_many).first
-if model_class.to_s=~/Taxon$/
-  puts "fixture_path=#{ff.instance_variable_get(:@fixture_path)},taxon row=#{table_rows.inspect}"
-end                  
+                  
                 table_rows.each do |table_name,rows|
                   #handle join table separately, assume one model only have one HABTM association
                   next if habtm_association.present? and table_name == habtm_association.options[:join_table]
