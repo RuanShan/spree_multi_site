@@ -150,13 +150,7 @@ end
         @@all_cached_habtm_rows.clear
       end
       
-      # table act_as_nested_set is sepcial kind of tables
-      # it has column 'parent_id', should replace it with real id before insert.
-      # prams,  fixtures: instance of Fixtures
-      #   
-      def self.create_nested_set_records(fixtures)
-        
-      end  
+  
       # Replace this method to handle associations in yml.
           # Return a hash of rows to be inserted. The key is the table, the value is
       # a list of rows to insert to that table.

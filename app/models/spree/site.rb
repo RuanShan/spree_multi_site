@@ -56,46 +56,48 @@ class Spree::Site < ActiveRecord::Base
     require 'ffaker'
     require 'erb'
     require 'spree_multi_site/custom_fixtures'
-
-    dir = File.join(SpreeMultiSite::Engine.root, "db", 'sample') 
-Rails.logger.debug "load sample from dir=#{dir}"
-    fixtures = ActiveSupport::OrderedHash.new
-    ruby_files = ActiveSupport::OrderedHash.new
-    Dir.glob(File.join(dir , '**/*.{yml,csv,rb}')).each do |fixture_file|
-      ext = File.extname fixture_file
-      if ext == ".rb"
-        ruby_files[File.basename(fixture_file, '.*')] = fixture_file
-      else
-        fixtures[fixture_file.sub(dir, "")[1..-1]] = fixture_file
+    #load sample of current application
+    [SpreeMultiSite::Engine.root, Rails.application.root].each{|engine_root|
+      dir = File.join(engine_root, "db", 'sample') 
+  Rails.logger.debug "load sample from dir=#{dir}"
+      fixtures = ActiveSupport::OrderedHash.new
+      ruby_files = ActiveSupport::OrderedHash.new
+      Dir.glob(File.join(dir , '**/*.{yml,csv,rb}')).each do |fixture_file|
+        ext = File.extname fixture_file
+        if ext == ".rb"
+          ruby_files[File.basename(fixture_file, '.*')] = fixture_file
+        else
+          fixtures[fixture_file.sub(dir, "")[1..-1]] = fixture_file
+        end
       end
-    end
-    # put eager loading model ahead, 
-    order_indexes = ['properites','option_types','option_values', 
-      'tax_categories','tax_rates','shipping_methods','promotions','calculators',
-      'products','product_properties','product_option_types','variants','assets', 
-      'taxonomies','taxons',
-      'users','orders','line_items','shipments','ship_addresses','adjustments']
-    #{:a=>1, :b=>2, :c=>3}.sort => [[:a, 1], [:b, 2], [:c, 3]] 
-    sorted_fixtures = fixtures.sort{|a,b|
-      key1,key2  = a.first.sub(".yml", "").sub("spree/", ""), b.first.sub(".yml", "").sub("spree/", "")  #a.first is relative_path
-#puts "a=#{a.inspect},b=#{b.inspect} \n key1=#{key1}, key2=#{key2}, #{(order_indexes.index(key1)<=> order_indexes.index(key2)).to_i}"      
-      i = (order_indexes.index(key1)<=> order_indexes.index(key2)).to_i
-      i==0 ? -1 : i # key not in order_indexes should be placed ahead.
-    }
-    sorted_fixtures.each do |relative_path , fixture_file|
-      # load fixtures  
-      # load_yml(dir,fixture_file)
-Rails.logger.debug "loading fixture_file=#{fixture_file}"
-      SpreeMultiSite::Fixtures.create_fixtures(dir, relative_path.sub(".yml", ""))
-    end
-#puts "create habtm records"      
-    SpreeMultiSite::Fixtures.create_habtm_records    
-    ruby_files.sort.each do |fixture , ruby_file|
-      # an invoke will only execute the task once
-Rails.logger.debug  "loading ruby #{ruby_file}"
-      require ruby_file
-    end
-    SpreeMultiSite::Fixtures.reset_cache
+      # put eager loading model ahead, 
+      order_indexes = ['properites','option_types','option_values', 
+        'tax_categories','tax_rates','shipping_methods','promotions','calculators',
+        'products','product_properties','product_option_types','variants','assets', 
+        'taxonomies','taxons',
+        'users','orders','line_items','shipments','ship_addresses','adjustments']
+      #{:a=>1, :b=>2, :c=>3}.sort => [[:a, 1], [:b, 2], [:c, 3]] 
+      sorted_fixtures = fixtures.sort{|a,b|
+        key1,key2  = a.first.sub(".yml", "").sub("spree/", ""), b.first.sub(".yml", "").sub("spree/", "")  #a.first is relative_path
+  #puts "a=#{a.inspect},b=#{b.inspect} \n key1=#{key1}, key2=#{key2}, #{(order_indexes.index(key1)<=> order_indexes.index(key2)).to_i}"      
+        i = (order_indexes.index(key1)<=> order_indexes.index(key2)).to_i
+        i==0 ? -1 : i # key not in order_indexes should be placed ahead.
+      }
+      sorted_fixtures.each do |relative_path , fixture_file|
+        # load fixtures  
+        # load_yml(dir,fixture_file)
+  Rails.logger.debug "loading fixture_file=#{fixture_file}"
+        SpreeMultiSite::Fixtures.create_fixtures(dir, relative_path.sub(".yml", ""))
+      end
+  #puts "create habtm records"      
+      SpreeMultiSite::Fixtures.create_habtm_records    
+      ruby_files.sort.each do |fixture , ruby_file|
+        # an invoke will only execute the task once
+  Rails.logger.debug  "loading ruby #{ruby_file}"
+        require ruby_file
+      end
+      SpreeMultiSite::Fixtures.reset_cache
+    }    
     self.class.current = original_current_website
   end
   

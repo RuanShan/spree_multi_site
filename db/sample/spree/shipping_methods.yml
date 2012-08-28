@@ -6,4 +6,4 @@ ups_two_day:
   zone_id: 2
 ups_one_day:
   name: UPS One Day
-  zone_id: 2
+  zone_id: 2  
