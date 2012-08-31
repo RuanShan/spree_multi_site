@@ -18,3 +18,4 @@ spec/dummy/tmp
 spec/dummy/log/development.log
 spec/dummy/public/spree
 spec/dummy/tmp
+spec/dummy/log

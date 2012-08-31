@@ -11,6 +11,7 @@ class Spree::Site < ActiveRecord::Base
   has_many :option_types,:dependent=>:destroy
   has_many :properties,:dependent=>:destroy
   has_many :payment_methods,:dependent=>:destroy
+  has_many :assets,:dependent=>:destroy
   
   has_many :taxons, :through => :taxonomies
   validates_presence_of   :name, :domain
@@ -50,6 +51,7 @@ class Spree::Site < ActiveRecord::Base
         } #skip first admin
       #shipping_method, calculator, creditcard, inventory_units, state_change,tokenized_permission
       #TODO remove image files
+      self.assets.clear
       return
     end
     
