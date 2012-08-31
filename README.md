@@ -7,7 +7,7 @@ Introduction goes here.
   http://localhost:3000/admin/sites
   
   # create new site 
-  http://localhost:3000/sites/new
+  http://localhost:3000/new_site
   
   # it is using delayed_job to load sample when create site vie above url
   # Start a delayed_job worker.
