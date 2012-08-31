@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(:version => 20120819054327) do
     t.string   "attachment_file_name"
     t.string   "type",                    :limit => 75
     t.datetime "attachment_updated_at"
+    t.integer  "site_id"
     t.text     "alt"
   end
 
