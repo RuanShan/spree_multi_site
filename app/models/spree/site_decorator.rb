@@ -45,6 +45,22 @@ Spree::Prototype.class_eval do
   default_scope  { where(:site_id =>  Spree::Site.current.id) }
 end    
 
+Spree::Configuration.class_eval do
+  belongs_to :site
+  default_scope  { where(:site_id =>  Spree::Site.current.id) }
+end    
+Spree::LogEntry.class_eval do
+  belongs_to :site
+  default_scope  { where(:site_id =>  Spree::Site.current.id) }
+end    
+Spree::Preference.class_eval do
+  belongs_to :site
+  default_scope  { where(:site_id =>  Spree::Site.current.id) }
+end    
+
+
 Spree::ShippingCategory.class_eval do
   has_many :shipping_methods,:dependent=>:destroy #override to add destroy
 end
+
+

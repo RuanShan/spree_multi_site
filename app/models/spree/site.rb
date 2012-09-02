@@ -23,6 +23,28 @@ class Spree::Site < ActiveRecord::Base
   # db/migrate/some_migration is using Spree::Product, it has default_scope using Site.current.id
   # so it require a default value.
   def load_sample(be_loading = true)
+    # global talbes
+    #   countries,states, zones, zone_members, roles #admin, user
+    # activators,
+    # tables belongs to site
+    #   addresses -> user(site)
+    #   configuration(site)
+    #   log_entries(site)
+    #   orders(site)->[state_changes,inventory_units,tokenized_permission]
+    #   [properties(site), prototypes(site)] -> properties_prototypes
+    #                    , option_types(site)] ->option_type_prototypes
+    #         ->products(site)->variants(site?)->assets(site)
+    #   payment_methods(site)->payments->adjustments 
+    #   preference(site)
+    #   tax_categories(site)-> tax_rates -> [shipping_methods, promotions,calculators]
+    #   taxonomies(site) -> taxons(site) -> products_taxons(site?)
+    # to be confirm
+    #   spree_tracker, state_changes
+    #   return_authorizations
+    #   mail_methods, pending_promotions, product_promotion_*
+    # unused table
+    #   credit_cars(site?), gateways(site?)
+    #
     original_current_website, self.class.current = self.class.current, self 
     
     if be_loading!=true #

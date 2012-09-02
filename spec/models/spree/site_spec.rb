@@ -16,4 +16,13 @@ describe Spree::Site do
     @site.users.first.email.should eq(user_attributes['email'])
   end
   
+  it "shold load samples" do
+    
+  end
+  
+  it "shold remove samples" do
+    
+  end
+  
+  
 end
