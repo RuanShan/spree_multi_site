@@ -57,6 +57,10 @@ Spree::Preference.class_eval do
   belongs_to :site
   default_scope  { where(:site_id =>  Spree::Site.current.id) }
 end    
+Spree::Zone.class_eval do
+  belongs_to :site
+  default_scope  { where(:site_id =>  Spree::Site.current.id) }
+end    
 
 
 Spree::ShippingCategory.class_eval do

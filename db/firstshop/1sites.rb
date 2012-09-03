@@ -1,7 +1,7 @@
-require 'highline/import'
+Spree::Site.current = Spree::Site.first
 
 # see last line where we create an admin if there is none, asking for email and password
-
+=begin
 def create_site
   
   name = 'Abc'
@@ -28,4 +28,4 @@ if Spree::Site.admin.blank?
 else
   puts "Default site #{domain} has already been previously created."
 end
-
+=end

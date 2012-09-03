@@ -1,5 +1,5 @@
 class Spree::Site < ActiveRecord::Base
-  cattr_accessor :current,:abc_domain
+  cattr_accessor :current
   has_many :taxonomies,:inverse_of =>:site,:dependent=>:destroy
   has_many :products,:inverse_of =>:site,:dependent=>:destroy
   has_many :orders,:inverse_of =>:site,:dependent=>:destroy
@@ -18,13 +18,14 @@ class Spree::Site < ActiveRecord::Base
   acts_as_nested_set
   accepts_nested_attributes_for :users
   
-  self.abc_domain = 'www.abc.com'
-  self.current = self.new  
+  self.current = Struct.new(:id)[]
+  # it is load before create site table. self.new would trigger error "Table spree_sites' doesn't exist"
   # db/migrate/some_migration is using Spree::Product, it has default_scope using Site.current.id
   # so it require a default value.
+  
   def load_sample(be_loading = true)
     # global talbes
-    #   countries,states, zones, zone_members, roles #admin, user
+    #   countries,states, zones, zone_members, roles #admin
     # activators,
     # tables belongs to site
     #   addresses -> user(site)
@@ -38,6 +39,7 @@ class Spree::Site < ActiveRecord::Base
     #   preference(site)
     #   tax_categories(site)-> tax_rates -> [shipping_methods, promotions,calculators]
     #   taxonomies(site) -> taxons(site) -> products_taxons(site?)
+    #   user
     # to be confirm
     #   spree_tracker, state_changes
     #   return_authorizations
@@ -80,9 +82,9 @@ class Spree::Site < ActiveRecord::Base
     require 'ffaker'
     require 'erb'
     require 'spree_multi_site/custom_fixtures'
-    #load sample of current application
-    [SpreeMultiSite::Engine.root, Rails.application.root].each{|engine_root|
-      dir = File.join(engine_root, "db", 'sample') 
+    # only load sample from one folder. by default is 'Rails.application.root/db/sample'
+    # could override it by setting Spree::Config.data_path
+      dir = File.join(Spree::Config.data_path,'sample')
   Rails.logger.debug "load sample from dir=#{dir}"
       fixtures = ActiveSupport::OrderedHash.new
       ruby_files = ActiveSupport::OrderedHash.new
@@ -95,7 +97,8 @@ class Spree::Site < ActiveRecord::Base
         end
       end
       # put eager loading model ahead, 
-      order_indexes = ['shipping_categories','payment_methods',
+      order_indexes = ['sites',
+        'shipping_categories','payment_methods',
         'properties','option_types','option_values', 
         'tax_categories','tax_rates','shipping_methods','promotions','calculators',
         'products','product_properties','product_option_types','variants','assets', 
@@ -122,13 +125,9 @@ class Spree::Site < ActiveRecord::Base
         require ruby_file
       end
       SpreeMultiSite::Fixtures.reset_cache
-    }    
+        
     self.class.current = original_current_website
   end
-  
-  def self.admin
-    where(:domain=>abc_domain).first
-  end 
   
   #set default_scope before call this method
   #call rake task to load sample instead of this method.

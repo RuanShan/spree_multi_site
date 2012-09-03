@@ -1,7 +1,11 @@
 require File.dirname(__FILE__) + '/../test_helper'
  
 class SiteTest < Test::Unit::TestCase
-
+  context "models should has default scope" do
+    #model.new should have current site id  
+    
+  end
+  
 	context "A site hierarchy" do
 		setup do
 			@parent = Factory.create(:site)

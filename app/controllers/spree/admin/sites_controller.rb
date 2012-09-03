@@ -15,7 +15,7 @@ module Spree
       end
       
       def create_after
-        @site.users.first.roles << Role.create(:name => "admin") 
+        @site.users.first.roles << Role.find_by_name("admin") 
         # should not add  @site.name as suffix of role.name, User.admin require :name="admin"
         if @site.has_sample?
           @site.update_attributes!(:loading_sample=>true)

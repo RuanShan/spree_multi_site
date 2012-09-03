@@ -2,7 +2,10 @@ SpreeMultiSite
 ==============
 
 Introduction goes here.
-
+  # set site's sample_path, default is Rails.application.root/db/sample
+  # copy it into config/initializers/spree.rb  
+  Spree::Site.sample_path = File.join(Rails.application.root, "db", 'sample')
+  
   # url for site admin 
   http://localhost:3000/admin/sites
   
