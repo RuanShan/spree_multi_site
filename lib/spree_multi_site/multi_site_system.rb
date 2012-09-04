@@ -14,6 +14,7 @@ class<< Spree::Core::ControllerHelpers
   alias_method_chain :included, :site_support 
 end
 
+
 module Spree
   module MultiSiteSystem
     def current_site
