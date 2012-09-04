@@ -84,7 +84,7 @@ class Spree::Site < ActiveRecord::Base
     require 'spree_multi_site/custom_fixtures'
     # only load sample from one folder. by default is 'Rails.application.root/db/sample'
     # could override it by setting Spree::Config.data_path
-      dir = File.join(SpreeMultiSite::Config.data_path,'sample')
+      dir = File.join(SpreeMultiSite::Config.data_dir,'sample')
   Rails.logger.debug "load sample from dir=#{dir}"
       fixtures = ActiveSupport::OrderedHash.new
       ruby_files = ActiveSupport::OrderedHash.new
