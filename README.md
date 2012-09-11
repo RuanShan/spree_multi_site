@@ -2,10 +2,9 @@ SpreeMultiSite
 ==============
 
 Introduction goes here.
-  # set site's sample_path, default is Rails.application.root/db/sample
-  # copy it into config/initializers/spree.rb  
-  Spree::Site.sample_path = File.join(Rails.application.root, "db", 'sample')
-  
+  # set site sample_path, default is Rails.application.root/db/sample
+  # copy it into config/initializers/spree.rb
+  Spree::Site.sample_path = File.join(Rails.application.root, "db", 'sample')  
   # url for site admin 
   http://localhost:3000/admin/sites
   
@@ -48,4 +47,4 @@ Be sure to bundle your dependencies and then create a dummy test app for the spe
     rake spree_multi_site:install:migrations               # Copy migrations from spree_multi_site to applica...
     # load default data, no sample
     $ bundle rake db:reset 
-Copyright (c) 2012 [name of extension creator], released under the New BSD License
+Copyright (c) 2012 [david,hui], released under the New BSD License
