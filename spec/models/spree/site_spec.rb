@@ -17,11 +17,24 @@ describe Spree::Site do
   end
   
   it "shold load samples" do
-    
+    @site.save!
+    @site.load_sample
   end
   
   it "shold remove samples" do
     
+    @site.save!
+    @site.load_sample(false)
+    Spree::Site.current = @site
+    Spree::Product.count.should eq(0)
+    Spree::Variant.count.should eq(0)
+    Spree::Zone.count.should eq(0)
+    Spree::ZoneMember.count.should eq(0)
+    Spree::StateChange.count.should eq(0)
+    #product variants
+    #taxonomy, taxon
+    #zone,zone_member
+    #state_changes
   end
   
   

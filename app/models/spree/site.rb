@@ -12,8 +12,9 @@ class Spree::Site < ActiveRecord::Base
   has_many :properties,:dependent=>:destroy
   has_many :payment_methods,:dependent=>:destroy
   has_many :assets,:dependent=>:destroy
+  has_many :zones,:dependent=>:destroy
+  has_many :state_changes,:dependent=>:destroy
   
-  has_many :taxons, :through => :taxonomies
   validates_presence_of   :name, :domain
   acts_as_nested_set
   accepts_nested_attributes_for :users
@@ -56,6 +57,9 @@ class Spree::Site < ActiveRecord::Base
         order.tokenized_permission.delete
         order.destroy
       }
+      self.products.each{|product|
+        product.variants.each{|variant| variant.inventory_units.clear}
+      }
       self.products.clear
       self.properties.clear
       self.payment_methods.each{|pm| pm.delete}
@@ -64,8 +68,12 @@ class Spree::Site < ActiveRecord::Base
       self.shipping_categories.clear
       self.tax_categories.clear
       self.taxonomies.each{|taxonomy|
-        taxonomy.taxons.clear
+        taxonomy.root.destroy # remove taxons
         taxonomy.destroy
+      }
+      
+      self.zones.each{|zone|
+        zone.destroy
       }
       #TODO fix taxons.taconomy_id
       self.users.find(:all,:include=>[:ship_address,:bill_address],:offset=>1, :order=>'id').each{|user|
@@ -76,6 +84,11 @@ class Spree::Site < ActiveRecord::Base
       #shipping_method, calculator, creditcard, inventory_units, state_change,tokenized_permission
       #TODO remove image files
       self.assets.clear
+      #FIXME seems it do not work 
+      self.clear_preferences #remove preferences
+      #TODO clear those tables
+      # creditcarts,preferences
+      self.state_changes.clear 
       return
     end
     
