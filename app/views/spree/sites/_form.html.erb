@@ -5,10 +5,17 @@
         <%= f.label :name, t(:site_name) %> <span class="required">*</span><br />
         <%= f.text_field :name, :class => 'fullwidth title' %>
       </p>
+
       <p>
-        <%= f.label :domain, t(:site_domain) %> <span class="required">*</span><br />
-        <%= f.text_field :domain, :class => 'fullwidth title' %>
+        <%= f.label :short_name, t(:site_short_name) %> <br />
+        <label id="protocol" for="site_short_name">http://</label>
+        <%= f.text_field :short_name, :class => 'fullwidth title' %>
+        <span id="dalianshops">.dalianshops.com</span>  <br />
+        <span class="hint"> 
+          如果您拥有像<strong>www.example.com</strong>这样的顶级域名，您可以稍候在后台管理中绑定它
+        </span>          
       </p>
+   
       <p>
         <%= f.label :has_sample, t(:site_has_sample) %> <br />
         <%= f.check_box :has_sample, :class => 'fullwidth title' %>

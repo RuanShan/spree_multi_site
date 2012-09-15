@@ -15,7 +15,8 @@ class Spree::Site < ActiveRecord::Base
   has_many :zones,:dependent=>:destroy
   has_many :state_changes,:dependent=>:destroy
   
-  validates_presence_of   :name, :domain
+  validates_presence_of   :name
+  validates :short_name, presence: true, length: 4..32, format: {with:  /^([a-z0-9\-])*$/ }, unless: "domain.blank?"
   acts_as_nested_set
   accepts_nested_attributes_for :users
   
@@ -23,6 +24,10 @@ class Spree::Site < ActiveRecord::Base
   # it is load before create site table. self.new would trigger error "Table spree_sites' doesn't exist"
   # db/migrate/some_migration is using Spree::Product, it has default_scope using Site.current.id
   # so it require a default value.
+  
+  def self.admin_site
+    self.first
+  end
   
   def load_sample(be_loading = true)
     # global talbes

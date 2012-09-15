@@ -27,15 +27,30 @@ module Spree
       @current_site = new_site 
     end
     
-    def get_site_from_request      
-      a_site = Spree::Site.find_by_domain(request.host)
-      if Rails.env !~ /prduction/ && a_site.blank?  
+    def get_site_from_request
+      site = nil      
+      # test.david.com => www.david.com/?n=test.david.com
+      # our domain is www.dalianshops.com 
+      if params[:n].try(:=~,/^([a-z0-9\-]{4,32})$/) # support short_name.dalianshops.com
+        short_name = $1
+        site = Spree::Site.find_by_short_name(short_name)
+      end
+
+      if site.blank?  
+        # support domain, ex. www.david.com
+        # TODO should use public_suffix_service handle example.com.cn
+        site = Spree::Site.find_by_domain(request.host) 
+      end
+      
+      if Rails.env !~ /prduction/ && site.blank?  
         # for development or test, enable get site from cookies
         if cookies[:abc_development_domain].present?
-          a_site = Spree::Site.find_by_domain( cookies[:abc_development_domain] )
+          site = Spree::Site.find_by_domain( cookies[:abc_development_domain] )
+        elsif cookies[:abc_development_short_name].present?
+          site = Spree::Site.find_by_short_name( cookies[:abc_development_short_name] )
         end        
       end
-      a_site
+      site
     end
     
     def get_site_and_products
