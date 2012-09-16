@@ -2,12 +2,12 @@
   <div class="clearfix">
     <div class="left" data-hook="admin_site_form_left">
       <p>
-        <%= f.label :name, t(:site_name) %> <span class="required">*</span><br />
+        <%= f.label :name, t(:name,:scope=>['activerecord','attributes','site']) %> <span class="required">*</span><br />
         <%= f.text_field :name, :class => 'fullwidth title' %>
       </p>
 
       <p>
-        <%= f.label :short_name, t(:site_short_name) %> <br />
+        <%= f.label :short_name, t(:short_name,:scope=>['activerecord','attributes','site']) %> <span class="required">*</span><br />
         <label id="protocol" for="site_short_name">http://</label>
         <%= f.text_field :short_name, :class => 'fullwidth title' %>
         <span id="dalianshops">.dalianshops.com</span>  <br />

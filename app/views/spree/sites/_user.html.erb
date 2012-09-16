@@ -1,11 +1,11 @@
 <div data-hook="user_form_fields">
   <p>
-    <%= label :user, :email, t(:user_email) %><span class="required">*</span><br />
+    <%= label :user, :email, t(:email,:scope=>['activerecord','attributes','user']) %><span class="required">*</span><br />
     <%= email_field :user, :email %>
   </p>
 
   <p>
-    <%= label :user,:password, t(:password,:scope=>['activerecord','attributes','user']) %><span class="required">*</span><br />
+    <%= label :user,:password, t(:password) %><span class="required">*</span><br />
     <%= password_field :user,:password %>
   </p>
 

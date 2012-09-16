@@ -3,9 +3,8 @@ class SampleSeedJob < Struct.new(:site)
     Spree::Site.current = site 
     #site.users.first, it require `spree_users`.`site_id` =current_site.id
     admin_user = site.users.first
-    site.load_sample
-Rails.logger.debug "site=#{site.inspect}"    
-Rails.logger.debug "user=#{admin_user.inspect}"
+    site.load_sample    
+Rails.logger.info "user=#{admin_user.id}"
     Spree::UserMailer.load_sample(admin_user).deliver
   end
 

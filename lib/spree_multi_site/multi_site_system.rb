@@ -55,7 +55,7 @@ module Spree
     
     def get_site_and_products
       Spree::Site.current = current_site
-      logger.debug "current_site=#{current_site}"
+      logger.debug "current_site=#{current_site.id},get_layout=#{get_layout}"
       #raise ArgumentError  if @site.nil?
       #logger.debug "product.all=#{Spree::Product.all}"
       @taxonomies = (current_site ? current_site.taxonomies : [])
