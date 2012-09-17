@@ -31,7 +31,7 @@ module Spree
       site = nil      
       # test.david.com => www.david.com/?n=test.david.com
       # our domain is www.dalianshops.com 
-      if params[:n].try(:=~,/^([a-z0-9\-]{4,32})$/) # support short_name.dalianshops.com
+      if params[:n].try(:=~,/^([a-z0-9\-]{4,32})/) # support short_name.dalianshops.com
         short_name = $1
         site = Spree::Site.find_by_short_name(short_name)
       end
