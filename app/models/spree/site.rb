@@ -16,7 +16,7 @@ class Spree::Site < ActiveRecord::Base
   has_many :state_changes,:dependent=>:destroy
   
   validates_presence_of   :name
-  validates :short_name, presence: true, length: 4..32, format: {with:  /^([a-z0-9\-])*$/ }, unless: "domain.blank?"
+  validates :short_name, presence: true, length: 4..32, format: {with:  /^([a-z0-9\-])*$/ } #, unless: "domain.blank?"
   acts_as_nested_set
   accepts_nested_attributes_for :users
   
