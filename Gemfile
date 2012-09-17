@@ -24,6 +24,7 @@ else
   gem "ruby-debug19"
 end
 
+gem 'daemons' #require it while running script/delayed_job.
 gem 'delayed_job_active_record'
 
 group :development,:test do
