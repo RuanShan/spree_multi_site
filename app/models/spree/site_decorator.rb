@@ -26,7 +26,23 @@ Spree::Taxon.class_eval do
 end
 Spree::TaxCategory.class_eval do
   belongs_to :site
+
   default_scope  { where(:site_id =>  Spree::Site.current.id) }
+  #refer to http://stackoverflow.com/questions/7545938/how-to-remove-validation-using-instance-eval-clause-in-rails
+  #remove original defined validator first.
+  _validators.reject!{ |key, _| key == :name }
+
+  _validate_callbacks.reject! do |callback|
+    if callback.raw_filter.respond_to? :attributes
+      #callback.raw_filter maybe symbol, ex. :validate_associated_records_for_tax_rates:Symbol 
+      callback.raw_filter.attributes == [:name]
+    end
+  end
+
+
+  # Add new validates_uniqueness_of with correct scope
+  validates :name, :uniqueness => { :scope => [:site_id,:deleted_at] }
+
 end
 Spree::Property.class_eval do
   belongs_to :site

@@ -130,6 +130,7 @@ class Spree::Site < ActiveRecord::Base
         i = (order_indexes.index(key1)<=> order_indexes.index(key2)).to_i
         i==0 ? -1 : i # key not in order_indexes should be placed ahead.
       }
+      SpreeMultiSite::Fixtures.reset_cache
       sorted_fixtures.each do |relative_path , fixture_file|
         # load fixtures  
         # load_yml(dir,fixture_file)
@@ -143,7 +144,6 @@ class Spree::Site < ActiveRecord::Base
   Rails.logger.debug  "loading ruby #{ruby_file}"
         require ruby_file
       end
-      SpreeMultiSite::Fixtures.reset_cache
         
     self.class.current = original_current_website
   end

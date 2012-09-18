@@ -12,9 +12,10 @@ module Spree
             @site.users.first.roles << Spree::Role.find_by_name('admin')
             # should not add  @site.name as suffix of role.name, User.admin require :name="admin"
             if @site.has_sample?
-              @site.update_attributes!(:loading_sample=>true)
+              @site.load_sample
+              #@site.update_attributes!(:loading_sample=>true)
               # add job to load sample
-              Delayed::Job.enqueue SampleSeedJob.new( @site )
+              #Delayed::Job.enqueue SampleSeedJob.new( @site )
             end 
             redirect_to site_path(@site)
           end
