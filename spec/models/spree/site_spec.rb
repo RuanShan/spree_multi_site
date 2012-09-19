@@ -41,5 +41,9 @@ describe Spree::Site do
     #state_changes
   end
   
+  it "shold create two site and load samples for them" do
+    
+    #product image copied and in right folder.
+  end
   
 end

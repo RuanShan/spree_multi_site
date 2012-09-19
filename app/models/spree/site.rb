@@ -142,7 +142,7 @@ class Spree::Site < ActiveRecord::Base
       ruby_files.sort.each do |fixture , ruby_file|
         # an invoke will only execute the task once
   Rails.logger.debug  "loading ruby #{ruby_file}"
-        require ruby_file
+        load ruby_file
       end
         
     self.class.current = original_current_website
