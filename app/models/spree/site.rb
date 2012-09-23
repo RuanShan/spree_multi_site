@@ -148,9 +148,8 @@ class Spree::Site < ActiveRecord::Base
     self.class.current = original_current_website
   end
   
-  # current site'subdomain => short_name.dalianshops.com
-  def subdomain
-    ([self.short_name] + self.class.admin_site.domain.split('.')[1..-1]).join('.')
-  end
-   
+  #set default_scope before call this method
+  #call rake task to load sample instead of this method.
+  #self.delay(:queue=>"load_sample").load_sample
+  
 end
