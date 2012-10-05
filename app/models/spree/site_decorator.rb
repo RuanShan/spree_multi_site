@@ -23,6 +23,11 @@ Spree::Order.class_eval do
   default_scope  { where(:site_id =>  Spree::Site.current.id) }
 end
 
+Spree::LineItem.class_eval do
+  default_scope :joins => :order
+  default_scope {where("spree_orders.site_id=?", Spree::Site.current.id)}
+end
+
 Spree::Prototype.class_eval do
   belongs_to :site
   default_scope  { where(:site_id =>  Spree::Site.current.id) }
@@ -75,6 +80,13 @@ Spree::TaxCategory.class_eval do
   validates :name, :uniqueness => { :scope => [:site_id,:deleted_at] }
 
 end
+
+Spree::TaxRate.class_eval do
+  default_scope :joins => :tax_category
+  default_scope {where("spree_tax_categories.site_id=?", Spree::Site.current.id)}
+end
+
+
 Spree::User.class_eval do
   belongs_to :site
   default_scope  { where(:site_id =>  Spree::Site.current.id) }
