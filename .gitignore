@@ -24,3 +24,4 @@ spec/dummy/log/development.log
 spec/dummy/log/development.log
 spec/dummy/db/schema.rb
 spec/dummy/log
+spec/dummy/tmp
