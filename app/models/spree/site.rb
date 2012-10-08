@@ -152,5 +152,5 @@ class Spree::Site < ActiveRecord::Base
   def subdomain
     ([self.short_name] + self.class.admin_site.domain.split('.')[1..-1]).join('.')
   end
-   
+    
 end
