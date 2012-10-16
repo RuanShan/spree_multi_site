@@ -46,5 +46,10 @@ Be sure to bundle your dependencies and then create a dummy test app for the spe
     rake spree_promo:install:migrations      
     rake spree_multi_site:install:migrations               # Copy migrations from spree_multi_site to applica...
     # load default data, no sample
-    $ bundle rake db:reset 
+    $ bundle rake db:reset
+    
+After load default&first seeds, you could test manually by providing those parameters or cookies,
+    params[:n]: n is 'short_name.dalianshops.com'
+    cookies[:abc_development_short_name]: abc_development_short_name is site's short_name     
+    
 Copyright (c) 2012 [david,hui], released under the New BSD License

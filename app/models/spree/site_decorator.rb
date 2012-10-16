@@ -56,7 +56,12 @@ Spree::Property.class_eval do
 end
 
 Spree::ShippingCategory.class_eval do
-  has_many :shipping_methods,:dependent=>:destroy #override to add destroy
+  #has_many :shipping_methods,:dependent=>:destroy 
+  #no need to add destroy, it has site id now.
+end
+Spree::ShippingMethod.class_eval do
+  belongs_to :site
+  default_scope  { where(:site_id =>  Spree::Site.current.id) }
 end
 
 Spree::Taxonomy.class_eval do

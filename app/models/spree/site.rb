@@ -81,6 +81,8 @@ class Spree::Site < ActiveRecord::Base
       self.zones.each{|zone|
         zone.destroy
       }
+      self.shipping_methods.clear
+      
       #TODO fix taxons.taconomy_id
       self.users.find(:all,:include=>[:ship_address,:bill_address],:offset=>1, :order=>'id').each{|user|
         user.bill_address.destroy
