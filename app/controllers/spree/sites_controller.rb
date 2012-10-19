@@ -9,7 +9,7 @@ module Spree
           @user = Spree::User.new(params[:user])
           @site.users << @user
           if @site.save
-            @site.users.first.roles << Spree::Role.find_by_name('admin')
+            @site.users.first.spree_roles << Spree::Role.find_by_name('admin')
             # should not add  @site.name as suffix of role.name, User.admin require :name="admin"
             if @site.has_sample?
               @site.load_sample
