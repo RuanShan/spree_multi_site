@@ -14,6 +14,7 @@ capybara-*.html
 **.orig
 rerun.txt
 pickle-email-*.htmlspec/dummy/log
+spec/dummy
 spec/dummy/public/spree/*
 spec/dummy/db/schema.rb
 spec/dummy/log/*
@@ -21,3 +22,4 @@ spec/dummy/tmp/*
 spec/dummy/log
 spec/dummy/tmp
 /.rvmrc
+/.project
