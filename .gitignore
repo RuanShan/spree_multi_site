@@ -23,3 +23,6 @@ spec/dummy/log
 spec/dummy/tmp
 /.rvmrc
 /.project
+/Gemfile.lock
+.idea/
+
