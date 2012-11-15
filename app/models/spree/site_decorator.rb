@@ -28,7 +28,7 @@ end
 Spree::LineItem.class_eval do
   #this cause ActiveRecord::ReadOnlyRecord, while modify lineitem
   #default_scope :joins => :order 
-  default_scope {where("spree_orders.site_id=?", Spree::Site.current.id)}
+  #default_scope {where("spree_orders.site_id=?", Spree::Site.current.id)}
 end
 
 Spree::Prototype.class_eval do
