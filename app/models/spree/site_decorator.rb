@@ -26,7 +26,8 @@ end
 # we should never call LineItem.find or LineItem.new
 # use @order.line_items, @order.add_variant instead
 Spree::LineItem.class_eval do
-  default_scope :joins => :order
+  #this cause ActiveRecord::ReadOnlyRecord, while modify lineitem
+  #default_scope :joins => :order 
   default_scope {where("spree_orders.site_id=?", Spree::Site.current.id)}
 end
 
