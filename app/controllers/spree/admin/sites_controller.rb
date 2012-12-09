@@ -9,7 +9,7 @@ module Spree
       end
       
       def create
-        @user = Spree::User.new(params[:user])
+        @user = Spree.user_class.new(params[:user])
         @site.users << @user
         super
       end

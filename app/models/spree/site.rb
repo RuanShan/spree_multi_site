@@ -1,12 +1,13 @@
 class Spree::Site < ActiveRecord::Base
-  cattr_accessor :current,:subdomain_regexp
+  cattr_accessor :current,:subdomain_regexp, :loading_fake_order_with_sample
   has_many :taxonomies,:inverse_of =>:site,:dependent=>:destroy
   has_many :products,:inverse_of =>:site,:dependent=>:destroy
   has_many :orders,:inverse_of =>:site,:dependent=>:destroy
-  has_many :users,:inverse_of =>:site,:dependent=>:destroy
+  has_many :users,:inverse_of =>:site,:dependent=>:destroy, :class_name =>Spree.user_class.to_s
   has_many :tax_categories,:inverse_of =>:site,:dependent=>:destroy
   
   has_many :shipping_categories,:dependent=>:destroy
+  has_many :shipping_methods,:dependent=>:destroy
   has_many :prototypes,:dependent=>:destroy
   has_many :option_types,:dependent=>:destroy
   has_many :properties,:dependent=>:destroy
@@ -23,6 +24,7 @@ class Spree::Site < ActiveRecord::Base
   # db/migrate/some_migration is using Spree::Product, it has default_scope using Site.current.id
   # so it require a default value.
   self.subdomain_regexp = /^([a-z0-9\-])*$/
+  self.loading_fake_order_with_sample = false
   validates_presence_of   :name
   validates :short_name, presence: true, length: 4..32, format: {with: subdomain_regexp} #, unless: "domain.blank?"
   
@@ -105,8 +107,12 @@ class Spree::Site < ActiveRecord::Base
     require 'spree_multi_site/custom_fixtures'
     # only load sample from one folder. by default is 'Rails.application.root/db/sample'
     # could override it by setting Spree::Config.data_path
-      dir = File.join(SpreeMultiSite::Config.seed_dir,'sample')
-  Rails.logger.debug "load sample from dir=#{dir}"
+    sample_dirs = ['sample']
+    sample_dirs << 'fake_order' if self.class.loading_fake_order_with_sample                                               
+    for sample_dir in sample_dirs    
+      dir = File.join(SpreeMultiSite::Config.seed_dir,sample_dir)
+      puts "load sample from dir=#{dir}"
+  #Rails.logger.debug "load sample from dir=#{dir}"
       fixtures = ActiveSupport::OrderedHash.new
       ruby_files = ActiveSupport::OrderedHash.new
       Dir.glob(File.join(dir , '**/*.{yml,csv,rb}')).each do |fixture_file|
@@ -118,7 +124,7 @@ class Spree::Site < ActiveRecord::Base
         end
       end
       # put eager loading model ahead, 
-      order_indexes = ['sites',
+      fixture_indexes = ['sites',
         'shipping_categories','payment_methods',
         'properties','option_types','option_values', 
         'tax_categories','tax_rates','shipping_methods','promotions','calculators',
@@ -128,16 +134,21 @@ class Spree::Site < ActiveRecord::Base
       #{:a=>1, :b=>2, :c=>3}.sort => [[:a, 1], [:b, 2], [:c, 3]] 
       sorted_fixtures = fixtures.sort{|a,b|
         key1,key2  = a.first.sub(".yml", "").sub("spree/", ""), b.first.sub(".yml", "").sub("spree/", "")  #a.first is relative_path
-  #puts "a=#{a.inspect},b=#{b.inspect} \n key1=#{key1}, key2=#{key2}, #{(order_indexes.index(key1)<=> order_indexes.index(key2)).to_i}"      
-        i = (order_indexes.index(key1)<=> order_indexes.index(key2)).to_i
-        i==0 ? -1 : i # key not in order_indexes should be placed ahead.
+  #puts "a=#{a.inspect},b=#{b.inspect} \n key1=#{key1}, key2=#{key2}, #{(fixture_indexes.index(key1)<=> fixture_indexes.index(key2)).to_i}"      
+        i = (fixture_indexes.index(key1)<=> fixture_indexes.index(key2)).to_i
+        i==0 ? -1 : i # key not in fixture_indexes should be placed ahead.
       }
       SpreeMultiSite::Fixtures.reset_cache
       sorted_fixtures.each do |relative_path , fixture_file|
         # load fixtures  
         # load_yml(dir,fixture_file)
   Rails.logger.debug "loading fixture_file=#{fixture_file}"
-        SpreeMultiSite::Fixtures.create_fixtures(dir, relative_path.sub(".yml", ""))
+  puts "loading fixture_file=#{fixture_file}"
+        if fixture_file =~/users.yml/ #user class may be legacy_user or user
+          SpreeMultiSite::Fixtures.create_fixtures(dir, relative_path.sub(".yml", ""),{:spree_users=>Spree.user_class})
+        else
+          SpreeMultiSite::Fixtures.create_fixtures(dir, relative_path.sub(".yml", ""))            
+        end
       end
   #puts "create habtm records"      
       SpreeMultiSite::Fixtures.create_habtm_records    
@@ -146,7 +157,7 @@ class Spree::Site < ActiveRecord::Base
   Rails.logger.debug  "loading ruby #{ruby_file}"
         load ruby_file
       end
-        
+    end  #for sample_dir  
     self.class.current = original_current_website
   end
   

@@ -56,6 +56,8 @@ Spree::Property.class_eval do
   default_scope  { where(:site_id =>  Spree::Site.current.id) }
 end
 
+#TODO add site_id into shipments?
+
 Spree::ShippingCategory.class_eval do
   #has_many :shipping_methods,:dependent=>:destroy 
   #no need to add destroy, it has site id now.
@@ -98,7 +100,7 @@ Spree::TaxRate.class_eval do
 end
 
 
-Spree::User.class_eval do
+Spree.user_class.class_eval do
   belongs_to :site
   default_scope  { where(:site_id =>  Spree::Site.current.id) }
 end

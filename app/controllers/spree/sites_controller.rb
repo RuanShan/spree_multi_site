@@ -6,7 +6,7 @@ module Spree
           @user = @site.users.build
         else
           @site = Spree::Site.new(params[:site])
-          @user = Spree::User.new(params[:user])
+          @user = Spree.user_class.new(params[:user])
           @site.users << @user
           if @site.save
             @site.users.first.spree_roles << Spree::Role.find_by_name('admin')
