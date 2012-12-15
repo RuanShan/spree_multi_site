@@ -3,7 +3,8 @@ class Spree::Site < ActiveRecord::Base
   has_many :taxonomies,:inverse_of =>:site,:dependent=>:destroy
   has_many :products,:inverse_of =>:site,:dependent=>:destroy
   has_many :orders,:inverse_of =>:site,:dependent=>:destroy
-  has_many :users,:inverse_of =>:site,:dependent=>:destroy, :class_name =>Spree.user_class.to_s
+  has_many :users,:dependent=>:destroy, :class_name =>Spree.user_class.to_s.sub("Spree::","")
+  #FIXME,:inverse_of =>:site, it cause  uninitialized constant Spree::Site::, 
   has_many :tax_categories,:inverse_of =>:site,:dependent=>:destroy
   
   has_many :shipping_categories,:dependent=>:destroy
