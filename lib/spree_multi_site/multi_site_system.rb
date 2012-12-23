@@ -9,7 +9,7 @@ class<< Spree::Core::ControllerHelpers
     receiver.send :helper_method, 'get_site_and_products'
     #puts "do something befor original included"
     included_without_site_support(receiver)
-    receiver.before_filter :get_site_and_products
+    receiver.prepend_before_filter :get_site_and_products #initialize site before authorize user in Spree::UserSessionsController.create
   end
   alias_method_chain :included, :site_support 
 end

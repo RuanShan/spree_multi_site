@@ -51,5 +51,9 @@ Be sure to bundle your dependencies and then create a dummy test app for the spe
 After load default&first seeds, you could test manually by providing those parameters or cookies,
     params[:n]: n is 'short_name.dalianshops.com'
     cookies[:abc_development_short_name]: abc_development_short_name is site's short_name     
+
+Todos
+=======
+fix db index, add site_id into index  
     
 Copyright (c) 2012 [david,hui], released under the New BSD License

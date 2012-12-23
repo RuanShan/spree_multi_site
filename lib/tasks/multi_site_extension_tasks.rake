@@ -7,7 +7,7 @@ def rename_multi_site_migrations
   spree_multi_site_migrations = [] 
   Dir[File.join(Rails.root,'db','migrate','*.rb')].sort.each{|file|
     spree_zero_nine_zero_migration = file if file =~/spree_zero_nine_zero/
-    spree_multi_site_migrations<< file if file=~/spree_multi_site.rb$/ && file !~/add_site_payment_methods/
+    spree_multi_site_migrations<< file if file=~/spree_multi_site.rb$/ && file !~/_last_/ #z: load it at last.
     #leave this file 'add_site_payment_methods' at the end  
   }
   #puts "--spree_zero_nine_zero_migration=#{spree_zero_nine_zero_migration}" 

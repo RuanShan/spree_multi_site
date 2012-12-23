@@ -22,7 +22,7 @@ class AddSiteTaxons < ActiveRecord::Migration
     table_name = Spree::Asset.connection.table_exists?(:assets) ? :assets : :spree_assets
     add_column table_name, :site_id, :integer
     table_name = Spree::Preference.connection.table_exists?(:preferences) ? :preferences : :spree_preferences
-    add_column table_name, :site_id, :integer
+    add_column table_name, :site_id, :integer, :default=>0 #site_id & key is index, unique, could not be null, or unique would not work.
   end
 
   def down

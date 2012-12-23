@@ -1,3 +1,5 @@
+=begin
+  
 Deface::Override.new(:virtual_path => "layouts/admin",
                      :name => "converted_admin_tabs_104517776",
                      :insert_after => "[data-hook='admin_tabs'], #admin_tabs[data-hook]",
@@ -37,7 +39,7 @@ Deface::Override.new(:virtual_path => "admin/orders/index",
                      :insert_before => "[data-hook='admin_orders_index_rows'], #admin_orders_index_rows[data-hook]",
                      :text => "<td><%= ((order.site.name) if order.site) %></td>",
                      :disabled => false)
-=begin
+
 class MultiSiteHooks < Spree::ThemeSupport::HookListener 
   insert_after :admin_tabs do
     %(<%=  tab(:sites)  %>)

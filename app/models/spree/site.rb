@@ -1,5 +1,5 @@
 class Spree::Site < ActiveRecord::Base
-  cattr_accessor :current,:subdomain_regexp, :loading_fake_order_with_sample
+  cattr_accessor :unknown,:subdomain_regexp, :loading_fake_order_with_sample
   has_many :taxonomies,:inverse_of =>:site,:dependent=>:destroy
   has_many :products,:inverse_of =>:site,:dependent=>:destroy
   has_many :orders,:inverse_of =>:site,:dependent=>:destroy
@@ -20,7 +20,8 @@ class Spree::Site < ActiveRecord::Base
   acts_as_nested_set
   accepts_nested_attributes_for :users
   
-  self.current = Struct.new(:id)[]
+  #app_configuration require site_id
+  self.unknown = Struct.new(:id).new(0)
   # it is load before create site table. self.new would trigger error "Table spree_sites' doesn't exist"
   # db/migrate/some_migration is using Spree::Product, it has default_scope using Site.current.id
   # so it require a default value.
@@ -29,9 +30,21 @@ class Spree::Site < ActiveRecord::Base
   validates_presence_of   :name
   validates :short_name, presence: true, length: 4..32, format: {with: subdomain_regexp} #, unless: "domain.blank?"
   
-  def self.admin_site
-    self.first
+  
+  class << self
+    def admin_site
+      self.first
+    end
+    
+    def current
+      ::Thread.current[:spree_multi_site] || self.unknown 
+    end
+    
+    def current=(some_site)
+      ::Thread.current[:spree_multi_site] = some_site      
+    end
   end
+  
   
   def load_sample(be_loading = true)
     # global talbes
@@ -112,7 +125,6 @@ class Spree::Site < ActiveRecord::Base
     sample_dirs << 'fake_order' if self.class.loading_fake_order_with_sample                                               
     for sample_dir in sample_dirs    
       dir = File.join(SpreeMultiSite::Config.seed_dir,sample_dir)
-      puts "load sample from dir=#{dir}"
   #Rails.logger.debug "load sample from dir=#{dir}"
       fixtures = ActiveSupport::OrderedHash.new
       ruby_files = ActiveSupport::OrderedHash.new
@@ -144,7 +156,6 @@ class Spree::Site < ActiveRecord::Base
         # load fixtures  
         # load_yml(dir,fixture_file)
   Rails.logger.debug "loading fixture_file=#{fixture_file}"
-  puts "loading fixture_file=#{fixture_file}"
         if fixture_file =~/users.yml/ #user class may be legacy_user or user
           SpreeMultiSite::Fixtures.create_fixtures(dir, relative_path.sub(".yml", ""),{:spree_users=>Spree.user_class})
         else
