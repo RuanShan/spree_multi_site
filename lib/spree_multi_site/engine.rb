@@ -32,7 +32,6 @@ module SpreeMultiSite
           else
             some_key =[self.class.name, name, Spree::Site.current.id].join('::').underscore            
           end
-          puts "name=#{name},key=#{some_key}"
           some_key 
         end
       end
