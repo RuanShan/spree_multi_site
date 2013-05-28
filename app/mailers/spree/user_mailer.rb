@@ -6,7 +6,7 @@ class Spree::UserMailer < ActionMailer::Base
     mail(:to => user.email,
          :subject => user.site[:name] )
   end
-  if Rails.env !~ /production/
+  if Rails.env =~ /development|test/
     class Preview < MailView
       def load_sample()
         site = Spree::Site.create!(:name=>"ABC",:domain=>"www.example.com")
