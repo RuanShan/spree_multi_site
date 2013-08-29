@@ -1,6 +1,5 @@
-source 'http://ruby.taobao.org'
-#source 'http://rubygems.org'
-gem 'rails', '3.2.8'
+#source 'http://ruby.taobao.org'
+source 'http://rubygems.org'
 gem 'mysql2'
 
 group :assets do
@@ -11,7 +10,7 @@ end
 #==================required rails===================
 
 gem 'jquery-rails'
-gem 'spree', '1.2.0'
+gem 'spree', :github => "spree/spree", :branch => "2-0-stable"
 
 group :test do
   gem 'ffaker'
