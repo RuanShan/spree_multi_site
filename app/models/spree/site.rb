@@ -30,6 +30,7 @@ class Spree::Site < ActiveRecord::Base
   validates_presence_of   :name
   validates :short_name, presence: true, length: 4..32, format: {with: subdomain_regexp} #, unless: "domain.blank?"
   
+  attr_accessible :name, :domain, :short_name
   
   class << self
     def admin_site
@@ -113,9 +114,61 @@ class Spree::Site < ActiveRecord::Base
       #TODO clear those tables
       # creditcarts,preferences
       self.state_changes.clear 
-      return
+    else
+      load_fake_products  
     end
     
+   self.class.current = original_current_website
+  end
+  
+  # current site'subdomain => short_name.dalianshops.com
+  def subdomain
+    ([self.short_name] + self.class.admin_site.domain.split('.')[1..-1]).join('.')
+  end
+  
+  private
+  
+  def load_fake_products
+      load_sample_file("payment_methods")
+      load_sample_file("shipping_categories")
+      load_sample_file("shipping_methods")
+      load_sample_file("tax_categories")
+      load_sample_file("tax_rates")
+
+      load_sample_file("products")
+      load_sample_file("taxonomies")
+      load_sample_file("taxons")
+      load_sample_file("option_types")
+      load_sample_file("option_values")
+      load_sample_file("product_option_types")
+      load_sample_file("product_properties")
+      load_sample_file("prototypes")
+      load_sample_file("variants")
+      load_sample_file("stock")
+      load_sample_file("assets")
+
+
+  end
+  
+  def load_fake_orders
+      load_sample_file("orders")
+      load_sample_file("line_items")
+      load_sample_file("adjustments")
+      load_sample_file("payments")
+  end
+  # copy from spree/sample/lib/spree/sample.rb
+  def load_sample_file( file)
+     path = File.expand_path(samples_path + "#{file}.rb")
+Rails.logger.debug "start load #{file}"     
+     load path
+  end
+  
+  # copy from spree/sample/lib/spree/sample.rb
+  def samples_path
+   Pathname.new(File.join(SpreeMultiSite::Config.seed_dir, 'samples'))
+  end
+  
+  def original_load_sample
     require 'ffaker'
     require 'erb'
     require 'spree_multi_site/custom_fixtures'
@@ -170,12 +223,7 @@ class Spree::Site < ActiveRecord::Base
         load ruby_file
       end
     end  #for sample_dir  
-    self.class.current = original_current_website
-  end
-  
-  # current site'subdomain => short_name.dalianshops.com
-  def subdomain
-    ([self.short_name] + self.class.admin_site.domain.split('.')[1..-1]).join('.')
+ 
   end
     
 end
