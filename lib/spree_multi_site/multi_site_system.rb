@@ -1,7 +1,7 @@
 # Spree::BaseController.class_eval would not work
 # Spree::UserSessionsController derive from Devise::SessionsController, it included Spree::Core::ControllerHelpers
-require 'spree/core/controller_helpers'
-class<< Spree::Core::ControllerHelpers
+require 'spree/core/controller_helpers/common'
+class<< Spree::Core::ControllerHelpers::Common
   def included_with_site_support(receiver)
     receiver.send :include, Spree::MultiSiteSystem
     receiver.send :helper_method, 'current_site'

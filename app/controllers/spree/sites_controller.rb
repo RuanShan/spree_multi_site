@@ -1,5 +1,5 @@
 module Spree
-    class SitesController< BaseController
+    class SitesController< StoreController
       def new
         if request.get?
           @site = Spree::Site.new
