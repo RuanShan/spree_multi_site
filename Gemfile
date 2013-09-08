@@ -1,27 +1,8 @@
 #source 'http://ruby.taobao.org'
 source 'http://rubygems.org'
-gem 'mysql2'
+# Provides basic authentication functionality for testing parts of your engine
+gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: '2-0-stable'
 
-group :assets do
-  gem 'sass-rails',   '~> 3.2.5'
-  gem 'coffee-rails', '~> 3.2'
-  gem 'uglifier', '>= 1.0.3'
-end
-#==================required rails===================
-
-gem 'jquery-rails'
-gem 'spree', :github => "spree/spree", :branch => "2-0-stable"
-
-group :test do
-  gem 'ffaker'
-  gem 'sqlite3'
-end
-
-if RUBY_VERSION < "1.9"
-  gem "ruby-debug"
-else
-  gem "ruby-debug19"
-end
 
 gem 'daemons' #require it while running script/delayed_job.
 gem 'delayed_job_active_record'
