@@ -1,10 +1,11 @@
 class LastFixUniqueIndex < ActiveRecord::Migration
   def change
     if Spree::Site.table_exists?
-      
-      add_index "spree_users", ["site_id","email"], :name => "email_idx_unique", :unique => true
-      
-      
+      if defined?(Spree::Auth)
+        remove_index "spree_users", :name => "email_idx_unique"      
+        add_index "spree_users", ["site_id","email"], :name => "email_idx_unique", :unique => true
+      end
+            
       remove_index :spree_preferences, :name => 'index_spree_preferences_on_key'
       add_index "spree_preferences", ["site_id","key"], :name => "index_spree_preferences_on_key", :unique => true
 
