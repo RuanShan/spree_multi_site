@@ -48,6 +48,7 @@ class Spree::Site < ActiveRecord::Base
   
   
   def load_sample(be_loading = true)
+    require 'ffaker'
     # global talbes
     #   countries,states, zones, zone_members, roles #admin
     # activators,
@@ -115,7 +116,7 @@ class Spree::Site < ActiveRecord::Base
       # creditcarts,preferences
       self.state_changes.clear 
     else
-      load_fake_products  
+      load_sample_products  
     end
     
    self.class.current = original_current_website
@@ -128,44 +129,18 @@ class Spree::Site < ActiveRecord::Base
   
   private
   
-  def load_fake_products
-      load_sample_file("payment_methods")
-      load_sample_file("shipping_categories")
-      load_sample_file("shipping_methods")
-      load_sample_file("tax_categories")
-      load_sample_file("tax_rates")
-
-      load_sample_file("products")
-      load_sample_file("taxonomies")
-      load_sample_file("taxons")
-      load_sample_file("option_types")
-      load_sample_file("option_values")
-      load_sample_file("product_option_types")
-      load_sample_file("product_properties")
-      load_sample_file("prototypes")
-      load_sample_file("variants")
-      load_sample_file("stock")
-      load_sample_file("assets")
-
-
-  end
-  
-  def load_fake_orders
-      load_sample_file("orders")
-      load_sample_file("line_items")
-      load_sample_file("adjustments")
-      load_sample_file("payments")
-  end
-  # copy from spree/sample/lib/spree/sample.rb
-  def load_sample_file( file)
-     path = File.expand_path(samples_path + "#{file}.rb")
+  def load_sample_products
+    samples_path = Pathname.new(File.join(SpreeMultiSite::Config.seed_dir, 'samples'))
+    file = File.expand_path(samples_path + "seed.rb")
 Rails.logger.debug "start load #{file}"     
-     load path
+    load file
   end
   
-  # copy from spree/sample/lib/spree/sample.rb
-  def samples_path
-   Pathname.new(File.join(SpreeMultiSite::Config.seed_dir, 'samples'))
+  def load_sample_orders
+    samples_path = Pathname.new(File.join(SpreeMultiSite::Config.seed_dir, 'fake_order'))
+    file = File.expand_path(samples_path + "seed.rb")
+Rails.logger.debug "start load #{file}"     
+    load file
   end
   
   def original_load_sample
