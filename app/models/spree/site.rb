@@ -3,7 +3,7 @@ class Spree::Site < ActiveRecord::Base
   has_many :taxonomies,:inverse_of =>:site,:dependent=>:destroy
   has_many :products,:inverse_of =>:site,:dependent=>:destroy
   has_many :orders,:inverse_of =>:site,:dependent=>:destroy
-  has_many :users,:dependent=>:destroy, :class_name =>Spree.user_class.to_s.sub("Spree::","")
+  has_many :users,:dependent=>:destroy, :class_name=>"Spree::User" #Spree.user_class.to_s
   #FIXME,:inverse_of =>:site, it cause  uninitialized constant Spree::Site::, 
   has_many :tax_categories,:inverse_of =>:site,:dependent=>:destroy
   
@@ -130,15 +130,13 @@ class Spree::Site < ActiveRecord::Base
   private
   
   def load_sample_products
-    samples_path = Pathname.new(File.join(SpreeMultiSite::Config.seed_dir, 'samples'))
-    file = File.expand_path(samples_path + "seed.rb")
+    file = Pathname.new(File.join(SpreeMultiSite::Config.seed_dir, 'samples', "seed.rb"))
 Rails.logger.debug "start load #{file}"     
     load file
   end
   
   def load_sample_orders
-    samples_path = Pathname.new(File.join(SpreeMultiSite::Config.seed_dir, 'fake_order'))
-    file = File.expand_path(samples_path + "seed.rb")
+    file = Pathname.new(File.join(SpreeMultiSite::Config.seed_dir, 'fake_order', "seed.rb"))
 Rails.logger.debug "start load #{file}"     
     load file
   end
