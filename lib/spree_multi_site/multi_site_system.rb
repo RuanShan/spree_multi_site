@@ -4,28 +4,29 @@ require 'spree/core/controller_helpers/common'
 class<< Spree::Core::ControllerHelpers::Common
   def included_with_site_support(receiver)
     receiver.send :include, Spree::MultiSiteSystem
-    receiver.send :helper_method, 'current_site'
-    receiver.send :helper_method, 'current_site='
-    receiver.send :helper_method, 'get_site_and_products'
     #puts "do something befor original included"
     included_without_site_support(receiver)
-    receiver.prepend_before_filter :get_site_and_products #initialize site before authorize user in Spree::UserSessionsController.create
+    receiver.prepend_before_filter :get_site #initialize site before authorize user in Spree::UserSessionsController.create
   end
-  alias_method_chain :included, :site_support 
+  alias_method_chain :included, :site_support
+  
+  #Spree::Api::BaseController would include  MultiSiteSystem, get_layout should not in it.
+  #override original methods 
+  def get_layout
+    current_site.layout.present? ? current_site.layout : Spree::Config[:layout]
+  end
 end
-
-
+      
 module Spree
   module MultiSiteSystem
     def current_site
       @current_site ||= (get_site_from_request  || Spree::Site.first)
     end
     
-    def current_site=(new_site)
-      #TODO raise error new_site.nil?
-      session[:site_id] = new_site.nil? ? nil : new_site.id
-      @current_site = new_site 
-    end
+#    def current_site=(new_site)
+#      @current_site = new_site
+#      Spree::Site.current = new_site
+#    end
     
     def get_site_from_request
       site = nil      
@@ -43,39 +44,23 @@ module Spree
       end
       
       if Rails.env !~ /prduction/ && site.blank?  
-        # for development or test, enable get site from cookies
-        if cookies[:abc_development_domain].present?
-          site = Spree::Site.find_by_domain( cookies[:abc_development_domain] )
-        elsif cookies[:abc_development_short_name].present?
-          site = Spree::Site.find_by_short_name( cookies[:abc_development_short_name] )
+        # for development or test, enable get site from get_site
+        if request.cookie_jar[:abc_development_domain].present?
+          site = Spree::Site.find_by_domain( request.cookie_jar[:abc_development_domain] )
+        elsif request.cookie_jar[:abc_development_short_name].present?
+          site = Spree::Site.find_by_short_name( request.cookie_jar[:abc_development_short_name] )
         end        
       end
       site
     end
     
-    def get_site_and_products
+    def get_site
       Spree::Site.current = current_site
-      logger.debug "current_site=#{current_site.id},get_layout=#{get_layout}"
-      #raise ArgumentError  if @site.nil?
+      Rails.logger.debug "current_site=#{current_site.id}"
+      #raise ArgumentError  if current_site.nil?
       #logger.debug "product.all=#{Spree::Product.all}"
-      @taxonomies = (current_site ? current_site.taxonomies : [])
+      #@taxonomies = (current_site ? current_site.taxonomies : [])
     end
-    
-    #override original methods 
-    def get_layout
-      current_site.layout.present? ? current_site.layout : Spree::Config[:layout]
-    end
-  
-    def find_order      
-      unless session[:order_id].blank?
-        @order = Order.find_or_create_by_id(session[:order_id])
-      else      
-        @order = Order.create
-      end
-      @order.site = current_site
-      session[:order_id] = @order.id
-      @order
-    end
-  
+      
   end
 end
