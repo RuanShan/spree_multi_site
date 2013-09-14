@@ -16,7 +16,7 @@ files = ["zones",
   "stock",
   "assets"]
 for file in files
-  path = File.expand_path(File.join(File.dirname(__FILE__), "#{file}.rb"))
+  path = File.join(File.dirname(__FILE__), "#{file}.rb")
 Rails.logger.debug "start load #{file}"     
   load path
 end

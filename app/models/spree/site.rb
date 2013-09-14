@@ -30,7 +30,7 @@ class Spree::Site < ActiveRecord::Base
   validates_presence_of   :name
   validates :short_name, presence: true, length: 4..32, format: {with: subdomain_regexp} #, unless: "domain.blank?"
   
-  attr_accessible :name, :domain, :short_name
+  attr_accessible :name, :domain, :short_name, :has_sample
   
   class << self
     def admin_site
