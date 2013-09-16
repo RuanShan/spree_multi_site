@@ -38,11 +38,11 @@ class Spree::Site < ActiveRecord::Base
     end
     
     def current
-      ::Thread.current[:spree_multi_site] || self.unknown 
+      ::Thread.current[:spree_site] || self.unknown 
     end
     
     def current=(some_site)
-      ::Thread.current[:spree_multi_site] = some_site      
+      ::Thread.current[:spree_site] = some_site      
     end
   end
   
