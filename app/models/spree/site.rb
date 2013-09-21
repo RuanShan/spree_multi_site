@@ -29,7 +29,7 @@ class Spree::Site < ActiveRecord::Base
   self.loading_fake_order_with_sample = false
   validates_presence_of   :name
   validates :short_name, presence: true, length: 4..32, format: {with: subdomain_regexp} #, unless: "domain.blank?"
-  
+  validates :domain, uniqueness: true 
   attr_accessible :name, :domain, :short_name, :has_sample
   
   class << self

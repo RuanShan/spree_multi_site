@@ -44,7 +44,7 @@ module Spree
       end
       
       if Rails.env !~ /prduction/ && site.blank?  
-        # for development or test, enable get site from get_site
+        # for development or test, enable get site from cookie
         if request.cookie_jar[:abc_development_domain].present?
           site = Spree::Site.find_by_domain( request.cookie_jar[:abc_development_domain] )
         elsif request.cookie_jar[:abc_development_short_name].present?
@@ -56,7 +56,7 @@ module Spree
     
     def get_site
       Spree::Site.current = current_site
-      Rails.logger.debug "current_site=#{current_site.id}"
+      Rails.logger.debug "current_site=#{Spree::Site.current.id}"
       #raise ArgumentError  if current_site.nil?
       #logger.debug "product.all=#{Spree::Product.all}"
       #@taxonomies = (current_site ? current_site.taxonomies : [])
