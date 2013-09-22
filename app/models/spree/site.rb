@@ -46,6 +46,9 @@ class Spree::Site < ActiveRecord::Base
     end
   end
   
+  def unknown?
+    !(self.id>0)
+  end
   
   def load_sample(be_loading = true)
     require 'ffaker'
