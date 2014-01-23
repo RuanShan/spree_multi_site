@@ -2,18 +2,17 @@
 # Spree::UserSessionsController derive from Devise::SessionsController, it included Spree::Core::ControllerHelpers
 require 'spree/core/controller_helpers/common'
 class<< Spree::Core::ControllerHelpers::Common
-  def included_with_site_support(receiver)
-    receiver.send :include, Spree::MultiSiteSystem
-    #puts "do something befor original included"
-    included_without_site_support(receiver)
-    receiver.prepend_before_filter :get_site #initialize site before authorize user in Spree::UserSessionsController.create
-  end
-  alias_method_chain :included, :site_support
+  #def included_with_site_support(receiver)
+  #  receiver.send :include, Spree::MultiSiteSystem
+  #  included_without_site_support(receiver)
+  #  #receiver.prepend_before_filter :get_site #initialize site before authorize user in Spree::UserSessionsController.create
+  #end
+  #alias_method_chain :included, :site_support
   
   #Spree::Api::BaseController would include  MultiSiteSystem, get_layout should not in it.
   #override original methods 
   def get_layout
-    current_site.layout.present? ? current_site.layout : Spree::Config[:layout]
+    Spree::Site.current.layout.present? ? Spree::Site.current.layout : Spree::Config[:layout]
   end
 end
       
@@ -22,12 +21,7 @@ module Spree
     def current_site
       @current_site ||= (get_site_from_request  || Spree::Site.first)
     end
-    
-#    def current_site=(new_site)
-#      @current_site = new_site
-#      Spree::Site.current = new_site
-#    end
-    
+       
     def get_site_from_request
       site = nil      
       # test.david.com => www.david.com/?n=test.david.com
