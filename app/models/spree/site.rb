@@ -1,5 +1,5 @@
 class Spree::Site < ActiveRecord::Base
-  cattr_accessor :unknown,:subdomain_regexp, :loading_fake_order_with_sample
+  cattr_accessor :unknown,:subdomain_regexp, :loading_fake_order_with_sample, :dalianshops_url
   has_many :taxonomies,:inverse_of =>:site,:dependent=>:destroy
   has_many :products,:inverse_of =>:site,:dependent=>:destroy
   has_many :orders,:inverse_of =>:site,:dependent=>:destroy
@@ -27,14 +27,15 @@ class Spree::Site < ActiveRecord::Base
   # so it require a default value.
   self.subdomain_regexp = /^([a-z0-9\-])*$/
   self.loading_fake_order_with_sample = false
+  self.dalianshops_url = "www.dalianshops.com"
   validates_presence_of   :name
   validates :short_name, presence: true, length: 4..32, format: {with: subdomain_regexp} #, unless: "domain.blank?"
   validates :domain, uniqueness: true 
   attr_accessible :name, :domain, :short_name, :has_sample
   
   class << self
-    def admin_site
-      self.first
+    def dalianshops
+      find_by_domain dalianshops_url
     end
     
     def current
@@ -44,6 +45,10 @@ class Spree::Site < ActiveRecord::Base
     def current=(some_site)
       ::Thread.current[:spree_site] = some_site      
     end
+  end
+  
+  def dalianshops?
+    self.domain == dalianshops_url
   end
   
   def unknown?
@@ -127,11 +132,10 @@ class Spree::Site < ActiveRecord::Base
   
   # current site'subdomain => short_name.dalianshops.com
   def subdomain
-    ([self.short_name] + self.class.admin_site.domain.split('.')[1..-1]).join('.')
+    ([self.short_name] + self.class.dalianshops.domain.split('.')[1..-1]).join('.')
   end
   
   private
-  
   def load_sample_products
     file = Pathname.new(File.join(SpreeMultiSite::Config.seed_dir, 'samples', "seed.rb"))
 Rails.logger.debug "start load #{file}"     
